@@ -2,6 +2,9 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 const API_KEY = '33632271-865dceae4afc82cedaa0ea243';
+// const BASE_URL = 'https://pixabay.com/api/';
+// const KEY = '33632271-865dceae4afc82cedaa0ea243';
+//  const SET_URL = `&per_page=4&page=1&image_type=photo&orientation=horizontal&safesearch=true`;
 
 export class PixabayAPI {
   #page = 1;
@@ -19,10 +22,12 @@ export class PixabayAPI {
     };
 
     const urlAXIOS = `?key=${API_KEY}`;
+    //let urlAXIOS = 'https://pixabay.com/api/'
     const { data } = await axios.get(urlAXIOS, { params });
     return data;
   }
-
+  
+  
   get query() {
     this.#query;
   }
@@ -33,7 +38,7 @@ export class PixabayAPI {
 
   incrementPage() {
     this.#page += 1;
-    axios.get(urlAXIOS).refresh
+    axios.get(urlAXIOS).refresh();
   }
 
   resetPage() {
