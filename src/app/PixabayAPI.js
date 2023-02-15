@@ -33,10 +33,12 @@ export class PixabayAPI {
 
   incrementPage() {
     this.#page += 1;
+    axios.get(urlAXIOS).refresh
   }
 
   resetPage() {
     this.#page = 1;
+    //observer.observe(guard)
   }
 
   setTotal(total) {
