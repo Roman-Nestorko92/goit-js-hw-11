@@ -28,10 +28,13 @@ const options = {
   rootMargin: '100px',
   threshold: 1.0,
 };
-
+let isPicturesEnd = false;
 const loadMorePhotos = async function (entries, observer) {
   entries.forEach(async entry => {
     if (entry.isIntersecting) {
+      if (isPicturesEnd) {
+        return;
+      }
       observer.unobserve(entry.target);
       pixaby.incrementPage();
 
@@ -40,7 +43,11 @@ const loadMorePhotos = async function (entries, observer) {
       try {
         spinnerPlay();
 
-        const { hits } = await pixaby.getPhotos();
+        const { hits, totalHits } = await pixaby.getPhotos();
+        totalHitsCount += hits.length;
+        if (totalHitsCount >= totalHits) {
+          isPicturesEnd = true;
+        }
         const markup = createMarkup(hits);
         refs.gallery.insertAdjacentHTML('beforeend', markup);
 
@@ -91,6 +98,7 @@ const onSubmitClick = async event => {
   try {
     spinnerPlay();
     const { hits, total } = await pixaby.getPhotos();
+    totalHitsCount += hits.length;
 
     if (hits.length === 0) {
       Notify.failure(
@@ -120,7 +128,7 @@ const onSubmitClick = async event => {
     spinnerStop();
   }
 };
-
+let totalHitsCount = 0;
 const onLoadMore = async () => {
   pixaby.incrementPage();
   if (!pixaby.hasMorePhotos) {
@@ -129,7 +137,8 @@ const onLoadMore = async () => {
     notifyInit;
   }
   try {
-    const { hits } = await pixaby.getPhotos();
+    const { hits, totalHits } = await pixaby.getPhotos();
+    totalHitsCount += hits;
     const markup = createMarkup(hits);
     refs.gallery.insertAdjacentHTML('beforeend', markup);
     modalLightboxGallery.refresh();
